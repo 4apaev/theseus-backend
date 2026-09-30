@@ -1,6 +1,6 @@
 // @ts-check
 
-import { O, Is, Fail, each } from '@theseus/util'
+import { A, O, Is, Fail, each } from '@theseus/util'
 
 /*
     the seed classes. each one takes a raw object and checks it in the
@@ -17,6 +17,15 @@ import { O, Is, Fail, each } from '@theseus/util'
 const positive = x => Is.n(x) && x > 0
 const text     = x => Is.s(x) && x.length > 0
 
+/** a commodity trades, a module also fits a slot */
+export const KINDS = O.freeze(A.of('commodity', 'module'))
+
+/** how a hold must carry it. see game.md, "the hauling classes" */
+export const FORMS = O.freeze(A.of('dry', 'liquid', 'gas', 'chilled', 'live'))
+
+/** what it is, for the market board and the price curve */
+export const CATEGORIES = O.freeze(A.of('food', 'tech', 'chemical', 'metal', 'consumer', 'luxury'))
+
 /** a tradable good. price_base and elasticity drive the price curve */
 export class Good {
     /**
@@ -29,14 +38,22 @@ export class Good {
         positive(raw.price_base) || Fail.raise(`good ${ gid } needs a positive price_base`)
         positive(raw.elasticity) || Fail.raise(`good ${ gid } needs a positive elasticity`)
         positive(raw.volume)     || Fail.raise(`good ${ gid } needs a positive volume`)
-        text(raw.kind)           || Fail.raise(`good ${ gid } needs a kind`)
+        FORMS.includes(raw.form) || Fail.raise(`good ${ gid } form must be one of ${ FORMS }`)
+        CATEGORIES.includes(raw.category)
+            || Fail.raise(`good ${ gid } category must be one of ${ CATEGORIES }`)
+
+        // a seed row is a commodity unless it says otherwise. Design says otherwise
+        const kind = raw.kind ?? 'commodity'
+        KINDS.includes(kind) || Fail.raise(`good ${ gid } kind must be one of ${ KINDS }`)
 
         this.gid        = gid
         this.name       = raw.name
         this.price_base = raw.price_base
         this.elasticity = raw.elasticity
         this.volume     = raw.volume
-        this.kind       = raw.kind
+        this.kind       = kind
+        this.form       = raw.form
+        this.category   = raw.category
     }
 }
 

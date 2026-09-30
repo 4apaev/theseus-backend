@@ -25,6 +25,9 @@ import {
     Good,
     System,
     Station,
+    KINDS,
+    FORMS,
+    CATEGORIES,
 } from '@theseus/domain'
 
 // ── universe graph ────────────────────────────────────────────────────────────
@@ -86,12 +89,22 @@ test('every station names a system that exists', () => {
         assert.ok(universe.systems.has(st.system), `${ st.stid } → ${ st.system }`)
 })
 
-test('sol holds the planets, the other stars hold one station each', () => {
+test('every system holds at least its gateway, Alpha holds only that', () => {
     const of = sysid => universe.nodes.values().filter(n => n.system === sysid).toArray()
 
+    for (const { sysid } of universe.systems.values())
+        assert.ok(of(sysid).length, `${ sysid } has no station`)
+
     assert.ok(of('sol').length > 1, 'sol is built out')
-    assert.equal(of('sirius').length, 1)
+    assert.equal(of('alpha.centauri').length, 1, 'alpha stays a crossroads')
     assert.equal(universe.nodes.get('sol.mars').system, 'sol')
+})
+
+test('every station reaches every other', () => {
+    const ids = [ ...universe.nodes.keys() ]
+
+    for (const to of ids)
+        assert.ok(universe.path(ids[ 0 ], to, 0.6, 0.002), `no route to ${ to }`)
 })
 
 // ── route speed limit ─────────────────────────────────────────────────────────
@@ -285,11 +298,27 @@ test('randomShipName varies', () => {
 
 // ── ship modules ─────────────────────────────────────────────────────────────
 
-test('every good declares a kind and a packaged volume', () => {
+test('every good declares a kind, a form, a category and a volume', () => {
     for (const g of Object.values(goods)) {
-        assert.ok(g.kind === 'commodity' || g.kind === 'module', g.name)
-        assert.ok(g.volume > 0, g.name)
+        assert.ok(KINDS.includes(g.kind), `${ g.name } kind`)
+        assert.ok(FORMS.includes(g.form), `${ g.name } form`)
+        assert.ok(CATEGORIES.includes(g.category), `${ g.name } category`)
+        assert.ok(g.volume > 0, `${ g.name } volume`)
     }
+})
+
+test('Good refuses a form or a category it does not know', () => {
+    const seed = { name: 'X', price_base: 1, elasticity: 1, volume: 1, category: 'metal' }
+
+    assert.throws(() => new Good('x', { ...seed, form: 'plasma' }), /form must be one of/)
+    assert.throws(() => new Good('x', { ...seed, form: 'dry', category: 'vibes' }), /category must be one of/)
+})
+
+test('every category and every form carries at least one good', () => {
+    const has = (field, v) => Object.values(goods).some(g => g[ field ] === v)
+
+    CATEGORIES.forEach(c => assert.ok(has('category', c), `nothing is ${ c }`))
+    FORMS.forEach(f => assert.ok(has('form', f), `nothing ships as ${ f }`))
 })
 
 test('every module design joins a real good by gid', () => {

@@ -12,7 +12,7 @@ export {
 } from './universe/index.js'
 
 export { Universe } from './universe/graph.js'
-export { Good, System, Station } from './universe/model.js'
+export { Good, System, Station, KINDS, FORMS, CATEGORIES } from './universe/model.js'
 export { lightYears, legTime, ASTRONOMICAL_UNIT, SUBLIGHT } from './universe/space.js'
 
 export {

@@ -1,4 +1,15 @@
+/** a commodity trades, a module also fits a slot */
 export type Kind = 'commodity' | 'module'
+
+/** how a hold must carry it. see game.md, "the hauling classes" */
+export type Form = 'dry' | 'liquid' | 'gas' | 'chilled' | 'live'
+
+/** what it is, for the market board */
+export type Category = 'food' | 'tech' | 'chemical' | 'metal' | 'consumer' | 'luxury'
+
+export declare const KINDS: readonly Kind[]
+export declare const FORMS: readonly Form[]
+export declare const CATEGORIES: readonly Category[]
 
 /** one row of the goods seed */
 export interface GoodSeed {
@@ -7,7 +18,10 @@ export interface GoodSeed {
     elasticity: number
     /** hold space for one unit */
     volume: number
-    kind: Kind
+    form: Form
+    category: Category
+    /** a seed row is a commodity unless it says otherwise */
+    kind?: Kind
 }
 
 /** one orbit of the systems seed */
@@ -46,6 +60,8 @@ export declare class Good {
     elasticity: number
     volume: number
     kind: Kind
+    form: Form
+    category: Category
 }
 
 /** a station at one orbit radius. the radius is its whole position */

@@ -29,7 +29,7 @@ import { lightYears, YEAR, LIGHT, SUBLIGHT } from './space.js'
 
 // ── the seed ─────────────────────────────────────────────────
 
-const TRADE  = [ 'name', 'price_base', 'elasticity', 'kind', 'volume' ]
+const TRADE  = [ 'name', 'price_base', 'elasticity', 'kind', 'volume', 'form', 'category' ]
 const DESIGN = [ 'family', 'mount', 'power', 'context', 'requires', 'conflicts', 'provides', 'effects' ]
 
 /**

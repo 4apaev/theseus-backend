@@ -95,23 +95,29 @@
 
 ### the known universe
 
-5 star systems, 10 stations, 15 links. one station in each system carries the
-links to other stars - the gateway. Sol is the only system built out, and its
-planets link only to each other.
+10 star systems, 23 stations, 35 links. one station in each system carries
+the links to other stars - the gateway. a system with more than a gateway is
+an inner well: Sol, Ran, Procyon, Lalande 21185, Barnards Star, Wolf 359 and
+Sirius. Alpha Centauri, Ross 154 and Lacaille 9352 are bare gateways.
 
-**between the stars**, in light years:
+**between the stars**, in light years. every gateway and what it reaches:
 
-```
-  sirius.gate ───── 9.02 ───── wolf.reach        sirius : ore   ↑ spice ↓
-      │  ╲                        ╱   │          wolf   : grain ↑ ore   ↓
-      │    ╲                 10.93    │          barnard: spice ↑ ore   ↓
-   9.52     ╲                ╱      8.27         alpha  : grain ↑ spice ↓
-      │       ╲        barnards.port  │          sol    : ore   ↑ grain ↓
-      │         ╲          ╱  ╲       │
-      │           ╲    6.44   5.95    │
-      │             ╲    ╱      ╲     │
-      └───── alpha.exchange ─ 4.32 ─ sol.outpost
-```
+| gateway | reaches |
+|---------|---------|
+| `sol.outpost` | alpha 4.32, barnards 5.95 |
+| `alpha.exchange` | sol 4.32, barnards 6.44, ross 8.11, wolf 8.27, sirius 9.52, lacaille 10.36 |
+| `barnards.port` | ross 5.54, sol 5.95, alpha 6.44, wolf 10.93 |
+| `wolf.reach` | lalande 4.06, alpha 8.27, procyon 8.66, sirius 9.02, barnards 10.93 |
+| `sirius.gate` | procyon 5.26, ran 7.84, wolf 9.02, alpha 9.52 |
+| `procyon.gate` | sirius 5.26, wolf 8.66, lalande 9.68 |
+| `lalande.gate` | wolf 4.06, procyon 9.68 |
+| `ross.beacon` | barnards 5.54, alpha 8.11, lacaille 9.58 |
+| `lacaille.relay` | ross 9.58, alpha 10.36, ran 11.49 |
+| `ran.gate` | sirius 7.84, lacaille 11.49 |
+
+**Sol keeps 2 links, so the frontier stays behind the hubs.** Alpha Centauri
+carries 6 and holds one station - it is a crossroads, not a destination. Ran
+sits in the far corner, reached through Sirius or through Lacaille 9352.
 
 **inside Sol**, in AU. Mars is the junction. Sol Outpost sits at Earth's
 orbit - home base, between Venus and Mars:
@@ -124,8 +130,45 @@ orbit - home base, between Venus and Mars:
      └───────────────── outpost ── 8.537 ┴─────── titan
 ```
 
-every station exports one good cheap (`↑ produces`) and craves another
-(`↓ consumes`), so profitable routes exist in every direction. whether a run
+**the other inner wells**, in AU. each holds its gateway and what orbits
+with it:
+
+| system | stations |
+|--------|----------|
+| Ran, ε Eridani | Ran Gate 1.00, Aegir Drift 3.48, Rorschach Watch 20.0 |
+| Procyon | Procyon Gate 1.0, Bebop Docks 4.2, Ember Station 15.0 |
+| Lalande 21185 | Qeng Ho Depot 0.30, Lalande Gate 1.00 |
+| Barnards Star | Rama Dock 0.23, Barnards Port 1.00 |
+| Wolf 359 | Wolf Reach 1.00, Solaris Lab 1.85 |
+| Sirius | Sirius Gate 1.0, Planetes Salvage 19.8 |
+
+Aegir Drift takes the orbit of ε Eridani b, the one confirmed planet there.
+Ember Station rides Procyon B, and Planetes Salvage rides Sirius B - both
+white dwarfs. the deepest legs cost about 4 years, near what a short star
+crossing costs, so an outer station is a voyage and not an errand.
+
+### the goods
+
+20 commodities, from potable water at 12 to a colony mainframe at 900.
+each one carries 2 axes, and they are not the same axis:
+
+- **`category`** - food, tech, chemical, metal, consumer, luxury. what
+  it is, and how the market board groups it.
+- **`form`** - dry, liquid, gas, chilled, live. how a hold must carry
+  it. grain and gene stock are both food, and one rides in a dry hold
+  while the other needs life support.
+
+nothing reads `form` yet. every hold takes every good, and the hauling
+classes that change it are designed in [game.md](../../docs/game.md),
+"the hauling classes".
+
+a module is a good too. `Design extends Good`, so a reactor declares
+`kind: 'module'` and rides in a dry hold like any crate.
+
+**every station exports 2 goods cheap** (`↑ produces`) and craves 2
+(`↓ consumes`), so profitable routes exist in every direction. a good a
+station neither makes nor takes still trades there, at its base price -
+that is the baseline every arbitrage is measured against. whether a run
 profits after `capitalCost` of travel time - that's the game.
 
 **a straight line inside Sol always wins on time, and sometimes on

@@ -49,7 +49,7 @@ export class Design extends Good {
      * @param {Effect[]} [design.effects]
      */
     constructor(gid, design) {
-        super(gid, { ...design, kind: 'module' })
+        super(gid, { form: 'dry', category: 'tech', ...design, kind: 'module' })
 
         const {
             family,
