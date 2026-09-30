@@ -209,7 +209,8 @@ let player decide about:
 **the brachistochrone trajectory model - scheduled**, see
 [phase.3.md](phase.3.md) step 3.5, in-system travel only. the fuller
 vision here - player-controlled burns, fuel mass, cargo weight - stays
-an idea, not scheduled (see phase.3.md's "explicitly out").
+an idea, not scheduled (see phase.3.md's "explicitly out"). the player-controlled
+burns are now designed, in "the flight" below.
 
 ### the gravity well
 
@@ -327,7 +328,289 @@ sides, so they are the gauge.
 2. an agent player that hauls cargo on purpose, so the real margin
    becomes measurable. see [sim.md](sim.md).
 3. fees, set to what that margin carries.
-4. fuel, only if the map still needs a reason to plan.
+4. the hauling classes - a hull declares which `form` it carries. the
+   forms are already on every good.
+5. fuel - decided: fuel is the cost of a burn. see "the flight".
+
+
+### the flight and fight decisions
+
+the topics, and where each one lands. none of it is scheduled yet.
+
+| topic | decision | section |
+|-------|----------|---------|
+| npc opponents | npc first. pvp needs both players online | the fight |
+| course change mid flight | yes, and it costs fuel dearly | the flight |
+| interstellar controls | few: cruise speed, flip, brake | the flight |
+| in-system controls | more: destination, profile, waypoints | the flight |
+| fight or flight | escape options as ghost paths, with fuel and eta | the flight |
+| the cost of a burn | fuel | the flight |
+| drive tiers | hydrogen anywhere, the icarus beam within 7 ly | the beam |
+| combat | in-system only, simultaneous turns | the fight |
+| detection | heat is passive, radar is active | the fight |
+| junk mining | weapons are cargo | the fight |
+| losing | insurance, respawn at home or the nearest station | when things go wrong |
+| adrift | the tug | when things go wrong |
+| offline | standing orders | when things go wrong |
+| fog of war | v1 by system, v2 by sensor range | fog of war |
+| crew | traits that help a trade or a fight | crew |
+| time dilation | the crew ages with you, the ports do not | the story |
+| story | the ship of theseus | the story |
+| the look | painted miniatures, a 3D ship, live space | the look |
+
+the first build steps under all of it: coordinates on the wire, a
+trajectory model in `packages/domain`, and a domain package that runs
+in the browser. today `universe/index.js` imports `readEnv`, and
+`@theseus/config` calls `process.loadEnvFile()` at import. the browser
+has no `process`.
+
+
+### the flight
+
+**the server owns the plan. both sides compute the position.** a flight
+plan is a list of phases: burn, coast, flip, brake. each burn has a
+direction, a thrust and a duration. the position at time `t` is a pure
+function of the plan, in `packages/domain`. the client and the server
+run the same function, so no position crosses the wire. the server gets
+an event only when a plan changes.
+
+- **the client** plans, previews and animates.
+- **the server** checks the plan against the drive and the fuel, stores
+  it, resolves arrivals, and decides who sees whom.
+
+**velocity carries over.** no sharp turn, no sudden stop. a stop takes
+`v / a` seconds, and the preview shows it.
+
+**controls:**
+- **interstellar - few.** a velocity-over-time graph with 3 handles:
+  end of burn (the cruise speed), flip, start of brake. the readout
+  changes while a handle moves: galaxy years, ship years, fuel, capital
+  cost, heat.
+- **in-system - more.** destination, profile, waypoints. the burn →
+  coast at 24 km/s → brake model of step 3.5 is the base.
+
+**a course change mid flight.** a player sees a trap and must escape. a
+course change is a new plan from the current position and velocity -
+one event, `ship.course.changed`. it costs fuel, and physics sets the
+price: a turn of θ at speed v needs `Δv = 2v·sin(θ/2)`.
+
+| where | move | Δv |
+|-------|------|----|
+| in-system, at 24 km/s | stop | 24 km/s |
+| | turn 90° | 34 km/s |
+| | reverse | 48 km/s |
+| interstellar, at 0.6c | divert 10° | 0.10c |
+| | turn 90° | 0.85c, more than a whole leg |
+
+in-system, an escape is dear but possible. interstellar, an escape is
+an abort: flip early, skip the brake and fly through, or divert to a
+star near the line.
+
+**fight or flight.** a contact appears. the chart shows escape options
+as ghost trajectories, each with its fuel cost and its new eta. the
+ghost turns solid when the server accepts it. the escape burn is hot,
+so the trap sees it.
+
+**the cost of a burn is fuel.** slush hydrogen is already a good. fuel
+grows with Δv by the rocket equation, with an exhaust velocity tuned so
+a normal trip costs a normal amount. a dodge on top then costs dearly,
+with no special rule. the true rocket equation at 0.6c breaks the
+setting - the beam below is the reason in the fiction. the tuning goes
+to [phase.4.md](phase.4.md) step 4.11.
+
+**what the model needs:**
+1. coordinates - star x, y, z from the HYG file, and a station orbit
+   angle beside its radius
+2. vector burns
+3. fuel in the hold, spent per Δv
+4. a new ship state, `adrift` - velocity, and no destination
+
+
+### the beam
+
+the fast drive is the telematter drive - see "telematter drive" below.
+hydrogen in the tank becomes antimatter, assembled from information the
+icarus array beams from sol.
+
+| tier | needs | works |
+|------|-------|-------|
+| reaction mass | hydrogen | anywhere, slow |
+| telematter | hydrogen and the beam | inside the beam. 3.2g sustained, 7.9g to maneuver |
+
+- **the beam travels at light speed.** a ship 5 ly out gets the beam 5
+  years after icarus sends it. the player books the beam before the
+  flight, so a telematter plan is committed. a course change leaves the
+  beam, and the drive falls back to reaction mass.
+- **range 5-7 ly.** at 7 ly the beam covers sol, alpha cen (4.32 ly)
+  and barnard's (5.95 ly). wolf 359 (7.80 ly) is just outside. the rest
+  is the frontier.
+- **the range is checked along the path,** not at the destination.
+  alpha → sirius leaves the beam partway, and the preview shows where.
+- **players build more arrays together.** an array at sirius adds
+  procyon (5.26 ly). an array at wolf 359 adds lalande (4.06 ly).
+- **the beam cannot be attacked.** it is light and quantum information,
+  so debris and slugs pass through it. only the array is a target, deep
+  in sol's well at 0.05 AU.
+- **the array defends itself** with its own beam. no police ships, no
+  npc simulation, and a physical reason. an attack voids the attacker's
+  insurance.
+
+at 3.2g a ship reaches 0.6c in about 0.18 years and 0.055 ly, so a beam
+leg is almost pure cruise.
+
+
+### the fight
+
+**in-system only.** an intercept at 0.6c is a lottery. fights happen
+near stations and gates, and on in-system transfers.
+
+**simultaneous turns (wego).** both sides plot their orders. the server
+resolves the round and emits events. the client plays the events back.
+the fight uses the flight's trajectory model: a fight is short-range
+flight planning plus firing solutions.
+
+**detection first:**
+- passive heat sees a burning drive
+- an active radar ping gives a precise track, and it tells everyone
+  where you are
+- a contact shows as an uncertainty ellipse
+- running cold hides a ship, and a cold ship cannot maneuver
+
+**weapons are cargo:**
+- mass driver slugs are a good. they take hold space from profit.
+- a bucket of bolts is jettisoned cargo. chinesium scrap in a crossing
+  orbit becomes a debris cloud. the cloud stays as a hazard for
+  everyone, and as salvage - junk mining.
+- close combat is rare, because a velocity match costs Δv. most fights
+  end when one side burns away, one side pays, or a slug gets lucky.
+
+**a hit lands on a module** - power, cruise, maneuver, cargo, utility.
+a hit on the hold spills goods.
+
+**opponents: npc first.** time dilation makes 2 players rare in one
+place at one time. pvp needs both players online.
+
+**a hail** can be an ink dialogue: bluff, pay, run.
+
+#### jettison - planned, not built
+
+the player cannot drop cargo today. the plan, owned by market-service:
+
+- command `cargo.jettison.requested` `{ pid, sid, gid, quantity }`,
+  event `cargo.jettisoned` `{ pid, sid, gid, quantity, stid }`. a
+  refusal uses `cargo.operation.rejected`.
+- `POST /api/ship/:sid/cargo/jettison` `{ gid, quantity }` → 202.
+- docked and in transit. v1 destroys the cargo. in transit `stid` is
+  null: `sid` and the event time place the debris later, from the
+  flight plan.
+- open: jettison while docked - allow it, with a disposal fee later?
+  and delete the unused `cargo.load.requested` and
+  `cargo.unload.requested` contracts?
+
+
+### when things go wrong
+
+**losing:** insurance, and a respawn at home or at the nearest station.
+
+**adrift:** the tank is empty and the ship has no destination.
+- call the tug. it tows the ship to the nearest station, for ₢.
+- no ₢: the tug takes payment in kind - cargo first, then modules, at
+  salvage price.
+- the tug never takes the hull or a bare starter rig, so no player is
+  stuck for good.
+- an insured ship gets the tow free.
+- other players can bring fuel. that is a job.
+
+**offline:** a flight takes real minutes, and the player may sleep.
+standing orders cover it:
+- pay (up to N% of the hold), run (up to X fuel), or fight
+- in a round, a side that does not commit in time plays its standing
+  order. this also covers a player who is online but away.
+- v1: an offline ship meets npc encounters only
+
+open: the standing-order defaults.
+
+
+### fog of war
+
+- **v1, no coordinates:** you see the ships in your own system - docked
+  there, on a leg inside it, or on a leg to or from it. the feed
+  already filters station chat by who is docked, and this is the same
+  filter one level up. it also fixes `traffic`, which returns every
+  ship ever (see [tech.debt.md](tech.debt.md)).
+- **v2, with coordinates:** sensor ranges, heat, radar.
+
+
+### the story
+
+no plot. a premise and systemic vignettes.
+
+- **the ship of theseus.** you replace every module. is it still the
+  same ship? after enough tows and insurance claims, not one original
+  part is left - and the log still says *far treasure*.
+- **time dilation.** the crew ages slower than every port. ansible
+  letters come from people who age faster.
+- **systemic vignettes** fire from game state, in ink (`inkjs`). you
+  come back to ember station after 30 galaxy years. orla has retired,
+  and her daughter runs the dock. ink only needs variables such as the
+  years since the last visit.
+
+
+### the look
+
+the painted preview shows it all:
+https://claude.ai/artifact/KSM5fYf1LMe7nY9g2nwn6c.
+
+- **painted miniatures.** everything that stands still is a painted
+  sprite or plate: platforms, buildings, crates, robots. cream, teal,
+  mustard, olive and rust, warm orange lights, navy space. the kit is
+  `~/Work/theseus/sketches/painted-parts-v1`.
+- **the ship is 3D and modular.** a toon ramp, a grime map and a dark
+  outline, lit like the sprites. each of the 5 slots has its own mount,
+  and the ship changes when a module is fitted or stripped. the same
+  model docks, flies, tumbles when adrift and is towed.
+- **one light:** a warm key from the upper left, a cool rim from the
+  right, on the sprites and on the ship.
+- **one camera:** the sprites are 3/4 views. the ship sits on them
+  through an orthographic camera at 42° azimuth and 29° elevation.
+- **live space.** a shader draws the ether and the stars, and each star
+  blinks on its own clock. a planet is a flat 2:1 map on a shader disc:
+  the surface turns under a fixed light, day line and rim. clouds are a
+  second map that turns faster.
+- **flows, not panels.** the player acts on things in the scene - a
+  building, the ship, a buoy, a star. a card opens next to the thing,
+  and the player confirms there. panels stay only for the hold grid and
+  the ship's numbers.
+- **₢ moves.** the number runs up or down, green for money in, red for
+  money out.
+- **ui:** lowercase mono, paper cards and glass chips on the sky,
+  orange for the action, teal for your own ship and plans, red for
+  threat. no portraits: robots, not faces.
+- **the hold is a grid,** diablo 2 style. volume maps to a shape - 1,
+  2, 4, 6, 8 → 1×1, 2×1, 2×2, 3×2, 4×2. hull capacity sets the grid:
+  the starter's 20 is 5×4. special cells show the hauling classes: tank
+  cells for liquids, frost cells for chilled goods, life-support cells
+  for live goods.
+- **goods and modules are icons.** drag a good into the hold: its
+  footprint shows green or red, and on drop a card shows the quantity
+  and the total. drag a module onto a hull slot to fit it, drag the slot
+  out to strip it. the module-exchange saga does both today.
+- **the chart is 3D.** the stars at their catalogue positions, drop
+  lines to a plane, the Icarus beam as a sphere. a switch redraws the
+  map in ship years.
+- **flight:** the target grows ahead as the progress bar, size in
+  proportion to 1 / distance. a blinking path, star parallax, the ether
+  glowing in the void. at 0.6c, aberration and Doppler show the speed.
+- **the console** stays, as a drawer on the backtick key.
+
+open: who owns the hold layout. the server should auto-pack on load and
+store the cell of each stack - otherwise the client can show a hold the
+server thinks has room. and stacks: one cell per stack, with a limit.
+
+open: one scale for all art. a crate is the unit, one crate per hold
+cell?
+
+the screens: [screens.brief.md](screens.brief.md).
 
 
 ### orbital mechanics
@@ -394,6 +677,12 @@ pilots, engineers, etc...
 each crew member should have traits.
 crew effectiveness = member traits compatibility.
 
+**decided:** traits on a few seats - haggler (a better spread), gunner
+(a better hit chance), engineer (less fuel per burn). the crew ages in
+ship time, not galaxy time, so they are the only people who age with
+you. wages are a money sink. the vignette voices can be the crew. no
+portraits.
+
 
 ### weapons
 
@@ -402,6 +691,9 @@ railguns.
 mass drivers.
 lasers only for short range if any.
 a spiled bucket of bolts in ship route may be fatal.
+
+see "the fight" above: weapons are cargo, and the fight is in-system,
+in simultaneous turns.
 
 
 ### propulsion
@@ -414,6 +706,9 @@ a spiled bucket of bolts in ship route may be fatal.
 
 
 #### telematter drive
+
+the decisions - light speed, 5-7 ly, the beam cannot be attacked - are
+in "the beam" above.
 [actual theseus](https://www.rifters.com/blindsight/theseus.htm).
 
 requires a dedicated propulsion station!
@@ -474,6 +769,52 @@ introduce ship classes / types / kinds
 - if there is a pirate, then - prison barge is a necessity
 - repair ship
 - passenger ship, a taxi, an interstellar uber). jokes aside, orbital taxi can be a thing
+
+#### the hauling classes
+
+one does not move liquid hydrogen in a container hold. every good now
+declares a `form`, and the form says what the hold must be:
+
+| form | the hold | goods today |
+|------|----------|-------------|
+| `dry` | a plain bulk hold, what every ship has | ore, grain, chips, titanium |
+| `liquid` | a tanker - sealed tanks, pumps, no free surface | water, polymer, liquor, reagents |
+| `gas` | cryogenic tanks, boil-off while it sits | slush hydrogen |
+| `chilled` | a reefer - power for the whole voyage | vat protein |
+| `live` | life support, and it dies if the power does | gene stock |
+
+**nothing reads `form` today.** the field is in the seed and on the
+wire, and every hold takes every good. this section is the mechanic it
+waits for.
+
+the shape, when it lands: a hull declares which forms it carries, or a
+cargo module does. `cargo.mk1` is a dry hold. a tank module makes a
+ship a tanker and gives up dry space for it. then `cargo.buy` refuses a
+good the ship cannot hold, the same way `previewRig` already refuses a
+module that does not fit its slot.
+
+3 things follow, and they are the reason to do it:
+
+1. **a ship becomes a choice.** a dry hauler and a tanker fly the same
+   map and trade different goods. today every ship trades everything.
+2. **the expensive goods get a gate.** reagents and liquor pay well
+   because a tanker costs something. a margin nobody can reach is not
+   a margin.
+3. **live cargo carries risk.** power fails, and the cargo dies. that
+   is the first cargo that can be lost without a pirate.
+
+it pairs with the ship classes above - a tanker is a hull that carries
+`liquid` and `gas`, and the list stops being flavour.
+
+**the cost:** every good needs a form (done), every hull needs a list
+of forms it takes, and the market has to tell a player why a buy was
+refused. the refusal path already exists - `cargo.operation.rejected`
+carries reasons.
+
+do it after the gravity well and the agent player. the well makes the
+map cost something; this makes the hold cost something. both are one
+term against existing data, and neither needs a new service.
+
 
 ### exploration
 

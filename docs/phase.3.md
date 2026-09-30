@@ -351,6 +351,9 @@ typo fails silently today.
 distances come from `docs/hygdata_v42.csv`. names come from
 [game.md](game.md)'s "notable sifi refs".
 
+**built ✔.** distances come from `docs/hygdata_v42.csv`, and every
+star link in the map is a real one.
+
 | system | distance | type | inner well |
 |--------|----------|------|------------|
 | Ran, ε Eridani | 10.49 ly | K2V | yes, 3 stations |
@@ -359,11 +362,22 @@ distances come from `docs/hygdata_v42.csv`. names come from
 | Ross 154 | 9.69 ly | M3.5Ve | no, gateway only |
 | Lacaille 9352 | 10.68 ly | M2/M3V | no, gateway only |
 
-the existing stars gain inner systems, except Alpha Centauri:
+the existing stars gained inner systems, except Alpha Centauri:
 Barnards Star, Wolf 359 and Sirius take 2 each, and Alpha stays a bare
-exchange. the map then runs about 27 stations against 10 today, which
-is where the O(V²) scan starts to cost - so the heap lands with
-something to measure.
+exchange. the map now runs 23 stations and 35 links against 10 and 15
+before, which is where the O(V²) scan starts to cost - so the heap
+lands with something to measure.
+
+station names carry the [game.md](game.md) "notable sifi refs": Rama,
+Rorschach, Bebop, Solaris, Planetes and the Qeng Ho.
+
+**Alpha Centauri carries 6 star links and one station.** it is the
+crossroads, and Sol keeps its 2 links, so the frontier stays behind the
+hubs. Ran sits in the far corner, through Sirius or Lacaille 9352.
+
+2 tests hold the content: every system keeps at least its gateway, and
+every station reaches every other. an orphan system now fails the
+build.
 
 #### classes at the boundary
 
