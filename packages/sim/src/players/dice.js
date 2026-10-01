@@ -10,7 +10,9 @@ import { O, each } from '@theseus/util'
     a player module exports turn(player, peers, stats).
 */
 
-const GOODS = new Set([ 'ore', 'grain', 'spice' ])
+// every commodity the seed carries, so new goods join the run on their own
+const GOODS = new Set(O.keys(universeData.goods)
+    .filter(gid => universeData.goods[ gid ].kind === 'commodity'))
 const DOCKED_ONLY = new Set([ 'buy', 'sell', 'travel', 'install', 'remove' ])
 const TRANSIT_POLL = 2000
 

@@ -20,6 +20,14 @@ import {
     deriveStats,
     cargoLoad,
     previewExchange,
+    universeData,
+    ASTRONOMICAL_UNIT,
+    Good,
+    System,
+    Station,
+    KINDS,
+    FORMS,
+    CATEGORIES,
 } from '@theseus/domain'
 
 // ── universe graph ────────────────────────────────────────────────────────────
@@ -81,12 +89,22 @@ test('every station names a system that exists', () => {
         assert.ok(universe.systems.has(st.system), `${ st.stid } → ${ st.system }`)
 })
 
-test('sol holds the planets, the other stars hold one station each', () => {
+test('every system holds at least its gateway, Alpha holds only that', () => {
     const of = sysid => universe.nodes.values().filter(n => n.system === sysid).toArray()
 
+    for (const { sysid } of universe.systems.values())
+        assert.ok(of(sysid).length, `${ sysid } has no station`)
+
     assert.ok(of('sol').length > 1, 'sol is built out')
-    assert.equal(of('sirius').length, 1)
+    assert.equal(of('alpha.centauri').length, 1, 'alpha stays a crossroads')
     assert.equal(universe.nodes.get('sol.mars').system, 'sol')
+})
+
+test('every station reaches every other', () => {
+    const ids = [ ...universe.nodes.keys() ]
+
+    for (const to of ids)
+        assert.ok(universe.path(ids[ 0 ], to, 0.6, 0.002), `no route to ${ to }`)
 })
 
 // ── route speed limit ─────────────────────────────────────────────────────────
@@ -280,11 +298,27 @@ test('randomShipName varies', () => {
 
 // ── ship modules ─────────────────────────────────────────────────────────────
 
-test('every good declares a kind and a packaged volume', () => {
+test('every good declares a kind, a form, a category and a volume', () => {
     for (const g of Object.values(goods)) {
-        assert.ok(g.kind === 'commodity' || g.kind === 'module', g.name)
-        assert.ok(g.volume > 0, g.name)
+        assert.ok(KINDS.includes(g.kind), `${ g.name } kind`)
+        assert.ok(FORMS.includes(g.form), `${ g.name } form`)
+        assert.ok(CATEGORIES.includes(g.category), `${ g.name } category`)
+        assert.ok(g.volume > 0, `${ g.name } volume`)
     }
+})
+
+test('Good refuses a form or a category it does not know', () => {
+    const seed = { name: 'X', price_base: 1, elasticity: 1, volume: 1, category: 'metal' }
+
+    assert.throws(() => new Good('x', { ...seed, form: 'plasma' }), /form must be one of/)
+    assert.throws(() => new Good('x', { ...seed, form: 'dry', category: 'vibes' }), /category must be one of/)
+})
+
+test('every category and every form carries at least one good', () => {
+    const has = (field, v) => Object.values(goods).some(g => g[ field ] === v)
+
+    CATEGORIES.forEach(c => assert.ok(has('category', c), `nothing is ${ c }`))
+    FORMS.forEach(f => assert.ok(has('form', f), `nothing ships as ${ f }`))
 })
 
 test('every module design joins a real good by gid', () => {
@@ -513,3 +547,86 @@ test('previewExchange handles install-only and remove-only, either side absent',
     assert.equal(previewExchange(20, catalog, { incoming: 'cargo.mk1' }), 12, 'install only: load shrinks')
     assert.equal(previewExchange(12, catalog, { outgoing: 'cargo.mk1' }), 20, 'remove only: load grows')
 })
+
+// ── universe seed ────────────────────────────────────────────────────────────
+// the classes check one row. the composer checks the references between rows.
+
+test('Good refuses a seed without a positive price', () => {
+    assert.throws(
+        () => new Good('x', { name: 'x', price_base: 0, elasticity: 1, volume: 1, kind: 'commodity' }),
+        /price_base/)
+})
+
+test('Station refuses a seed without an orbit radius', () => {
+    assert.throws(() => new Station('a', { name: 'A' }), /orbit radius/)
+})
+
+test('Station refuses a produces rate that is not positive', () => {
+    assert.throws(
+        () => new Station('a', { name: 'A', au: 1, produces: { ore: -3 }}),
+        /produces ore must be positive/)
+})
+
+test('System refuses a gateway that is not one of its own stations', () => {
+    assert.throws(
+        () => new System('s', { name: 'S', star: 'G2V', gateway: 'zz', orbits: { a: { name: 'A', au: 1 }}}),
+        /gateway zz is not one of its stations/)
+})
+
+test('System sorts its stations by orbit radius', () => {
+    const sys = new System('s', {
+        name: 'S', star: 'G2V', gateway: 'b',
+        orbits: {
+            c: { name: 'C', au: 9 },
+            a: { name: 'A', au: 0.4 },
+            b: { name: 'B', au: 1 },
+        },
+    })
+    assert.deepEqual(sys.stations.map(s => s.stid), [ 'a', 'b', 'c' ])
+})
+
+// an inner well is orbits with more than one entry. that is the whole rule
+test('a system with one station is a bare gateway', () => {
+    const bare = new System('s', { name: 'S', star: 'M6V', gateway: 'a', orbits: { a: { name: 'A', au: 1 }}})
+    const well = new System('t', { name: 'T', star: 'K2V', gateway: 'a', orbits: { a: { name: 'A', au: 1 }, b: { name: 'B', au: 3 }}})
+
+    assert.equal(bare.well, false)
+    assert.equal(well.well, true)
+})
+
+test('every station names a good and a module that exist', () => {
+    for (const st of universeData.stations) {
+        for (const gid of Object.keys(st.produces ?? {}))
+            assert.ok(goods[ gid ], `${ st.stid } produces unknown ${ gid }`)
+
+        for (const gid of Object.keys(st.consumes ?? {}))
+            assert.ok(goods[ gid ], `${ st.stid } consumes unknown ${ gid }`)
+
+        for (const gid of st.stocks ?? []) {
+            assert.ok(goods[ gid ], `${ st.stid } stocks unknown ${ gid }`)
+            assert.ok(universeData.modules[ gid ], `${ st.stid } stocks non-module ${ gid }`)
+        }
+    }
+})
+
+// the radii are the position. the link distance is arithmetic over them
+test('an in-system route measures the gap between 2 orbit radii', () => {
+    const sol = universeData.stations.filter(s => s.system === 'sol')
+    const orbit = stid => ORBIT[ stid ]
+
+    for (const r of universeData.routes) {
+        if (!sol.some(s => s.stid === r.from) || !sol.some(s => s.stid === r.to)) continue
+
+        const want = Math.abs(orbit(r.from) - orbit(r.to)) * ASTRONOMICAL_UNIT
+        assert.ok(Math.abs(r.ly - want) / want < 1e-12, `${ r.from } → ${ r.to }`)
+    }
+})
+
+const ORBIT = {
+    'sol.mercury' : 0.387,
+    'sol.venus'   : 0.723,
+    'sol.outpost' : 1.000,
+    'sol.mars'    : 1.524,
+    'sol.ganymede': 5.203,
+    'sol.titan'   : 9.537,
+}

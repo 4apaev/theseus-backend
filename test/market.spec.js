@@ -517,8 +517,18 @@ test('pollDrift never drives a consumer station to zero stock', async () => {
     await setTimeout(20)
     poller.stop()
 
-    const prices = outboxEvents(client).map(e => e.payload.price_buy)
-    assert.ok(prices.every(p => p > 0 && p < 1000), `every price stays sane: ${ prices }`)
+    /*  the floor holds stock at 40 against a target of 100, so the
+        scarcity term never passes 2.5. each good has its own ceiling -
+        a mainframe is worth more than a sack of grain.  */
+    const FLOOR  = 100 / 40
+    const MARGIN = 1.1                                   // spread() puts the ask above spot
+    const cap = gid => goods[ gid ].price_base * FLOOR ** goods[ gid ].elasticity * MARGIN
+
+    const over = outboxEvents(client)
+        .map(e => [ e.payload.gid, e.payload.price_buy ])
+        .filter(([ gid, px ]) => !(px > 0 && px <= cap(gid) + 1e-9))
+
+    assert.deepEqual(over, [], 'every price stays under its own ceiling')
 })
 
 test('pollDrift leaves settled stations alone', async () => {
