@@ -99,7 +99,7 @@ affected services:
 - annotated diagrams of tables + comments on every field
 - annotated diagrams of system wide layout
 
-### query builder
+#### query builder
 
 [knex](https://knexjs.org/guide/query-builder.html#knex)
 
@@ -196,7 +196,7 @@ add prestart phase when queries compiled
 ```
 
 
-#### assertations mess
+### assertations mess
 
 there is a banch of wild assertations accros the code base.
 
@@ -292,10 +292,21 @@ calc`shft >>>`
 
 ### infra
 
-<details>
-<summary>vscode sql highlight</summary>
-</details>
+#### git modules
 
+parent dir submodules
+
+```conf
+
+[submodule "backend"]
+  path = packages/auth
+  url = git@github.com:4apaev/theseus.git
+
+[submodule "frontend"]
+  path = packages/auth
+  url = git@github.com:4apaev/theseus-front.git
+
+```
 
 #### db
 

@@ -37,8 +37,8 @@ the look
 ------------------------------------------------
 
 **painted miniatures, a 3D ship, live space.** your painted set in
-`docs/assets/underway` is already in this style. the painted preview
-shows the rest:
+`~/Work/theseus/assets/underway` is already in this style. the painted
+preview shows the rest:
 https://claude.ai/artifact/KSM5fYf1LMe7nY9g2nwn6c - ask the owner to
 share it with you.
 
