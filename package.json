@@ -1,8 +1,8 @@
 {
-    "name"       : "theseus",
+    "name"       : "theseus-backend",
     "version"    : "0.2.3",
     "description": "interstellar trade game",
-    "repository" : "github:4apaev/theseus",
+    "repository" : "github:4apaev/theseus-backend",
     "type"       : "module",
 
     "workspaces" : [
