@@ -14,7 +14,7 @@ scoped slice of it - close what previous phases explicitly left open,
 add the depth that's actually within reach, defer what needs more
 thinking or a bigger commitment first.
 
-the eve-online research spike ([eve.md](eve.md)) is done - its
+the eve-online research spike ([eve.md](../../docs/eve.md)) is done - its
 architecture notes (time dilation, single-shard economy) stay reference
 material, not scheduled work.
 
@@ -240,7 +240,7 @@ actually fly in that setting.
 links between stars) keep today's constant-velocity relativistic model
 as-is - it's Krugman's own paper's own simplification ("ships travel at
 constant velocity v < c... no acceleration phases",
-[The.Theory.of.Interstellar.Trade.md](The.Theory.of.Interstellar.Trade.md)),
+[The.Theory.of.Interstellar.Trade.md](../../docs/The.Theory.of.Interstellar.Trade.md)),
 and a real relativistic-rocket version of this would be a much bigger,
 separate physics problem. ΔV applies to in-system travel only, where the
 accelerations involved are small enough for plain Newtonian mechanics
@@ -349,7 +349,7 @@ typo fails silently today.
 #### the candidates
 
 distances come from `docs/hygdata_v42.csv`. names come from
-[game.md](game.md)'s "notable sifi refs".
+[game.md](../../docs/game.md)'s "notable sifi refs".
 
 **built ✔.** distances come from `docs/hygdata_v42.csv`, and every
 star link in the map is a real one.
@@ -368,7 +368,7 @@ exchange. the map now runs 23 stations and 35 links against 10 and 15
 before, which is where the O(V²) scan starts to cost - so the heap
 lands with something to measure.
 
-station names carry the [game.md](game.md) "notable sifi refs": Rama,
+station names carry the [game.md](../../docs/game.md) "notable sifi refs": Rama,
 Rorschach, Bebop, Solaris, Planetes and the Qeng Ho.
 
 **Alpha Centauri carries 6 star links and one station.** it is the
@@ -425,9 +425,9 @@ plain AU in its constructor, so a `.js` literal, a `.json` file and a
 row from the admin board all produce the same validated object. build
 the classes first, and swap the source when the board needs it.
 
-see [deploy.md](deploy.md) for the seed hash that names which map ran.
+see [deploy.md](../../docs/deploy.md) for the seed hash that names which map ran.
 
-see [game.md](game.md)'s "the gravity well" for the term that makes an
+see [game.md](../../docs/game.md)'s "the gravity well" for the term that makes an
 inner orbit expensive. it is not part of this step, and this step gives
 it somewhere to apply.
 

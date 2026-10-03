@@ -64,7 +64,7 @@ phase 4
 ## 4.11 game balance
 
 theseus reads as a simulation, not as a game
-([game.md](game.md)'s "game balance"). this step sets the numbers, and
+([game.md](../../docs/game.md)'s "game balance"). this step sets the numbers, and
 it comes last because every mechanic must exist before anyone tunes it.
 
 **the sim is the instrument.** `player_profit` and `station_profit` in
@@ -89,7 +89,7 @@ mix says which rule the players fight. see [sim.md](sim.md).
    every balance number gets tuned against a random walk that loses by
    construction. this is the gate for the whole step.
 2. **measure the real margin** on a full buy, carry, sell loop.
-3. **set the fees to what that margin carries** - see [game.md](game.md)'s
+3. **set the fees to what that margin carries** - see [game.md](../../docs/game.md)'s
    "fees and taxes". prefer a derived fee over a flat one: docking from
    the orbit radius, handling from cargo volume, sales tax from the
    station's produces and consumes map. all 3 read data that exists.
@@ -104,7 +104,7 @@ mix says which rule the players fight. see [sim.md](sim.md).
   arrives to a restocked market, see [scripts/readme.md](../scripts/readme.md)
 - module prices and the tier gaps
 - the gravity well term, which changes every in-system leg at once
-  ([game.md](game.md)'s "the gravity well"). Mercury and Venus turn hard
+  ([game.md](../../docs/game.md)'s "the gravity well"). Mercury and Venus turn hard
   for a starter ship, and the early game moves outward
 - INTEREST_RATE, which no service reads today
 

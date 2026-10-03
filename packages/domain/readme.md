@@ -5,7 +5,7 @@
 - pure domain math + game data - no file/network io, no deps on other theseus
   service packages; the one exception is `@theseus/config`'s `readEnv`, used
   to read this game's tunable rule constants (see below)
-- interstellar trade formulas from Krugman's [the theory of interstellar trade](../../docs/The.Theory.of.Interstellar.Trade.md)
+- interstellar trade formulas from Krugman's [the theory of interstellar trade](../../../docs/The.Theory.of.Interstellar.Trade.md)
 
 
 ### deps:
@@ -159,7 +159,7 @@ each one carries 2 axes, and they are not the same axis:
   while the other needs life support.
 
 nothing reads `form` yet. every hold takes every good, and the hauling
-classes that change it are designed in [game.md](../../docs/game.md),
+classes that change it are designed in [game.md](../../../docs/game.md),
 "the hauling classes".
 
 a module is a good too. `Design extends Good`, so a reactor declares
@@ -195,7 +195,7 @@ work there too - `sol.mercury` to `sirius.gate` comes back
 3-hop one through Barnards Star and Wolf 359.
 
 **star distances are real**, computed in light years from Sol against the HYG
-star catalogue (`docs/hygdata_v42.csv`), which ships in this repo.
+star catalogue (`data/hygdata_v42.csv` in the theseus repo).
 `alpha.exchange` stands for Rigil Kentaurus, the G2V star of the Alpha
 Centauri pair.
 
@@ -221,7 +221,7 @@ picks between them.
 **between stars, `c` is 1.** the ship holds its own velocity for the whole
 leg, and the leg takes `ly / velocity`. this is Krugman's own
 simplification - see
-[The.Theory.of.Interstellar.Trade.md](../../docs/The.Theory.of.Interstellar.Trade.md).
+[The.Theory.of.Interstellar.Trade.md](../../../docs/The.Theory.of.Interstellar.Trade.md).
 the pilot ages less than the galaxy.
 
 **inside a system, `c` is `0.00008`** - 24 km/s, or 1.5 times the speed of

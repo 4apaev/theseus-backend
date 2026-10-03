@@ -1,6 +1,6 @@
 {
     "folders": [
-        { "name" : "🚀 theseus"    ,  "path": "../"                        },
+        { "name" : "🚀 theseus-backend"    ,  "path": "../"                        },
 
         // ══ APP ══════════════════════════════════════════════════════════════
         // { "name" : "⛩️ gateway"    ,  "path": "../apps/gateway"    },
@@ -37,8 +37,8 @@
             ".git"        : true,
             ".github"     : true,
             ".idea"       : true,
-            ".logs"       : true,
-            ".reports"    : true,
+            ".logs"       : false,
+            ".reports"    : false,
             "node_modules": true,
         },
         // "explorer.excludeGitIgnore": true,

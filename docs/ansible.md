@@ -2,7 +2,7 @@ ansible
 ================
 
 mechanics design for phase 3 step 3.4. see [phase.3.md](phase.3.md) and
-[game.md](game.md)'s "player 2 player communications" idea. this
+[game.md](../../docs/game.md)'s "player 2 player communications" idea. this
 document plans the work. it does not do any of it.
 
 game.md's own words: "some kind of ansible device that enables faster
