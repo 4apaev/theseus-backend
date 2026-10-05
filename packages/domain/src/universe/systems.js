@@ -4,8 +4,9 @@
     the map. this is the only file that content touches.
 
     star distances are real, in light years, from the HYG catalogue
-    (docs/hygdata_v42.csv). an orbit radius is the standard NASA mean,
-    in AU. the true distance moves with the planets, so a radius is an
+    (data/hygdata_v42.csv in the theseus repo).
+    an orbit radius is the standard NASA mean, in AU.
+    the true distance moves with the planets, so a radius is an
     approximation, and a good one.
 
     a station carries its radius and nothing else about position. every

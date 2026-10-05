@@ -5,7 +5,7 @@ full step list
 - phase 3 (current): [phase.3.md](phase.3.md)
 - phase 2 (done): [phase.2.md](phase.2.md)
 - phase 1 (done): [phase.1.md](phase.1.md)
-- game design: [game.md](game.md)
+- game design: [game.md](../../docs/game.md)
 - roles design: [permissions.md](permissions.md)
 
 ------------------------------------------------
@@ -198,7 +198,7 @@ confirm dialog before travel ✔
 ------------------------------------------------
 
 closes [phase.3.md](phase.3.md) step 3.2's "confirm dialog before
-travel" item, and the matching bug in [client.md](client.md) ("confirm
+travel" item, and the matching bug in `client.md` ("confirm
 dialog for travel").
 
 a click on a reachable station used to send `/travel` straight away.
@@ -217,7 +217,7 @@ pending-command timeout ✔
 ------------------------------------------------
 
 closes [phase.3.md](phase.3.md) step 3.2's "pending-command timeout"
-item, and the matching accepted risk in [client.md](client.md) ("no
+item, and the matching accepted risk in `client.md` ("no
 pending-command timeout - lost command leaves a `…` feed line").
 
 `client/js/commands.js`'s `send()` already stored `{ label, el }` per
@@ -1001,7 +1001,7 @@ first, matching `services:check`/`infra:health`/`smoke`.
 step 9: minimal client - done ✔
 ------------------------------------------------
 
-single html file, websocket-driven - plan in [client.md](client.md)
+single html file, websocket-driven - plan in `client.md`
 
 - [x] `client/` (`index.html` + `style.css` + `app.js`) - top-level, not
       nested in the gateway app, not an npm package. terminal theme (dark, monospace, phosphor glow,

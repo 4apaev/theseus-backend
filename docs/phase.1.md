@@ -3,7 +3,7 @@ phase 1 - vertical slice
 
 a playable vertical slice, not infrastructure cosplay: one loop where a player
 registers, gets a ship, travels, trades, and sees live updates. what the game
-is and why - see [game.md](game.md). done - phase 2 is current, see
+is and why - see [game.md](../../docs/game.md). done - phase 2 is current, see
 [phase.2.md](phase.2.md); day-to-day work in [progress.md](progress.md).
 
 
@@ -21,7 +21,7 @@ steps
 |   6    | [market service](../apps/market-service/readme.md)         - `@theseus/market`     buy + sell sagas                           | done    |
 |   7    | [auth](../packages/auth/readme.md)                         - `@theseus/auth`       sign / verify / create                     | done    |
 |   8    | [gateway](../apps/gateway/readme.md)                       - `@theseus/gateway`    http + websocket                           | done    |
-|   9    | [client](../client) - `client/index.html`, plan in [client.md](client.md)          websocket-driven                           | done    |
+|   9    | [client](../client) - `client/index.html`, plan in `client.md`          websocket-driven                           | done    |
 |   10   | projection rebuild - truncate + replay from event log                                                                         | done    |
 
 

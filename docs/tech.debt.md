@@ -318,7 +318,7 @@ see `ship-upgrades` vs `ship-modules` branch conflicts
 
 #### deploy
 
-see [deploy.md](deploy.md) - what has to run, the gaps that block it,
+see [deploy.md](../../docs/deploy.md) - what has to run, the gaps that block it,
 how much data each player base makes, and what the cloud charges.
 
 dockerize the game. need a real plan for this.

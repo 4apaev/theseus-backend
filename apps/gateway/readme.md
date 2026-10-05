@@ -9,7 +9,7 @@ step `8` in [docs/phase.1.md](../../docs/phase.1.md)
 - stateless: no schema, no migrations, no inbox/outbox - does NOT extend `@theseus/service`
 - composes `createKafkaClient` + `createProducer` + `DB.create({ schema: 'projection' })` directly (like `scripts/smoke.js`)
 - also serves the reference client - a top-level `client/index.html`, not
-  nested here and not an npm package; see [docs/client.md](../../docs/client.md)
+  nested here and not an npm package; see [client/](../../client/)
 
 ### deps
 - `garage`             - http server, router, middleware ([readme](https://github.com/4apaev/garage))

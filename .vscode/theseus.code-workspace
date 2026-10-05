@@ -1,6 +1,6 @@
 {
     "folders": [
-        { "name" : "🚀 theseus"    ,  "path": "../"                        },
+        { "name" : "🚀 theseus-backend"    ,  "path": "../"                        },
 
         // ══ APP ══════════════════════════════════════════════════════════════
         // { "name" : "⛩️ gateway"    ,  "path": "../apps/gateway"    },
