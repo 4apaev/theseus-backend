@@ -132,6 +132,8 @@ sets what is impossible.
 gate: a sim run before and after, with the same seed and tempo. read the
 rejection mix and the station visits.
 
+the numbers and diagrams: [ΔV.md](../../docs/ΔV.md).
+
 touches `packages/domain/src/universe/space.js` (`legTime()`) and
 `graph.js` (the `path()` weights). game.md's "the gravity well" gets the
 decision.

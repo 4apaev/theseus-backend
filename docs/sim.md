@@ -160,3 +160,18 @@ the wrong digits. the ranking of the levers does not change, because
 `traffic` is 60 times the size of a market read whatever the tokenizer
 says. replace these numbers with `count_tokens` output before anyone
 plans a budget from them.
+
+
+research free options
+------------------------------------------------
+
+this models are practicly free:
+i guess free teir api limits are not huge...
+
+1. apple's siri on the phone.
+2. google's gemini
+3. brave browser models
+
+
+
+
