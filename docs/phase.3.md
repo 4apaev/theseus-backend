@@ -37,9 +37,9 @@ content and visualization steps remain independent.
 | 3.3  | ship modules - rigs and upgrades              | done ✔ |
 | 3.4  | player messenger - the ansible                | done ✔ |
 | 3.5  | ΔV mechanics - in-system travel               | done ✔ |
-| 3.6  | universe growth - more stations, path() perf  |        |
-| 3.7  | travel manifest visualization                 |        |
-| 3.8  | jsdoc pass - close the types gap              |        |
+| 3.6  | universe growth - more stations, path() perf  | done ✔ |
+| 3.7  | travel manifest visualization                 | → 4.1  |
+| 3.8  | jsdoc pass - close the types gap              | any time |
 
 
 ### step 3.1 - ships name generator
